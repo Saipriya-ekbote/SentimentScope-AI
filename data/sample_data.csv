@@ -1,0 +1,311 @@
+id,platform,text,timestamp,sentiment
+1,Twitter,This product admire brilliant.,2026-08-01 08:00:00,positive
+2,Reddit,The app admire smooth.,2026-08-01 09:00:00,positive
+3,YouTube,The service recommend fantastic.,2026-08-01 10:00:00,positive
+4,Instagram,My team admire fantastic.,2026-08-01 11:00:00,positive
+5,Facebook,This product value smooth.,2026-08-01 12:00:00,positive
+6,Twitter,I admire great.,2026-08-01 13:00:00,positive
+7,Reddit,Customer support love excellent.,2026-08-01 14:00:00,positive
+8,YouTube,The service appreciate perfect.,2026-08-01 15:00:00,positive
+9,Instagram,Everything value good.,2026-08-01 16:00:00,positive
+10,Facebook,The interface am thrilled with smooth.,2026-08-01 17:00:00,positive
+11,Twitter,This product am thrilled with brilliant.,2026-08-01 18:00:00,positive
+12,Reddit,Everything recommend brilliant.,2026-08-01 19:00:00,positive
+13,YouTube,The design admire great.,2026-08-01 20:00:00,positive
+14,Instagram,The service admire smooth.,2026-08-01 21:00:00,positive
+15,Facebook,The service am happy with fantastic.,2026-08-01 22:00:00,positive
+16,Twitter,The service am satisfied with fantastic.,2026-08-01 23:00:00,positive
+17,Reddit,This product am satisfied with smooth.,2026-08-02 00:00:00,positive
+18,YouTube,The new update am pleased with outstanding.,2026-08-02 01:00:00,positive
+19,Instagram,Everything recommend fantastic.,2026-08-02 02:00:00,positive
+20,Facebook,The app enjoy smooth.,2026-08-02 03:00:00,positive
+21,Twitter,The report scheduled on Monday.,2026-08-01 08:00:00,neutral
+22,Reddit,The report closed in the afternoon.,2026-08-01 09:00:00,neutral
+23,YouTube,The meeting updated from the website.,2026-08-01 10:00:00,neutral
+24,Instagram,The store received on Monday.,2026-08-01 11:00:00,neutral
+25,Facebook,The store closed once a week.,2026-08-01 12:00:00,neutral
+26,Twitter,The setting updated tomorrow.,2026-08-01 13:00:00,neutral
+27,Reddit,The user scheduled in my inbox.,2026-08-01 14:00:00,neutral
+28,YouTube,The app started on Monday.,2026-08-01 15:00:00,neutral
+29,Instagram,The invoice checked in the afternoon.,2026-08-01 16:00:00,neutral
+30,Facebook,The report viewed yesterday.,2026-08-01 17:00:00,neutral
+31,Twitter,The email read in my inbox.,2026-08-01 18:00:00,neutral
+32,Reddit,The user read in my inbox.,2026-08-01 19:00:00,neutral
+33,YouTube,The app read today.,2026-08-01 20:00:00,neutral
+34,Instagram,The app closed once a week.,2026-08-01 21:00:00,neutral
+35,Facebook,The meeting started tomorrow.,2026-08-01 22:00:00,neutral
+36,Twitter,The report read in my inbox.,2026-08-01 23:00:00,neutral
+37,Reddit,The email read in the afternoon.,2026-08-02 00:00:00,neutral
+38,YouTube,The email closed in the afternoon.,2026-08-02 01:00:00,neutral
+39,Instagram,The app started in the afternoon.,2026-08-02 02:00:00,neutral
+40,Facebook,The report viewed this morning.,2026-08-02 03:00:00,neutral
+41,Twitter,Everything am unhappy with bad.,2026-08-01 08:00:00,negative
+42,Reddit,Everything struggle with broken.,2026-08-01 09:00:00,negative
+43,YouTube,This product am angry about useless.,2026-08-01 10:00:00,negative
+44,Instagram,The app am disappointed with confusing.,2026-08-01 11:00:00,negative
+45,Facebook,Customer support am frustrated by broken.,2026-08-01 12:00:00,negative
+46,Twitter,Everything am disappointed with unreliable.,2026-08-01 13:00:00,negative
+47,Reddit,Customer support am unhappy with confusing.,2026-08-01 14:00:00,negative
+48,YouTube,This product am disappointed with bad.,2026-08-01 15:00:00,negative
+49,Instagram,The delivery can't stand broken.,2026-08-01 16:00:00,negative
+50,Facebook,The delivery abandoned useless.,2026-08-01 17:00:00,negative
+51,Twitter,The service am unhappy with bad.,2026-08-01 18:00:00,negative
+52,Reddit,The interface abandoned unacceptable.,2026-08-01 19:00:00,negative
+53,YouTube,The app abandoned frustrating.,2026-08-01 20:00:00,negative
+54,Instagram,The delivery am disappointed with broken.,2026-08-01 21:00:00,negative
+55,Facebook,The new update am disappointed with awful.,2026-08-01 22:00:00,negative
+56,Twitter,The service dislike unacceptable.,2026-08-01 23:00:00,negative
+57,Reddit,Everything regret frustrating.,2026-08-02 00:00:00,negative
+58,YouTube,This product am angry about broken.,2026-08-02 01:00:00,negative
+59,Instagram,Everything am disappointed with frustrating.,2026-08-02 02:00:00,negative
+60,Facebook,Customer support am frustrated by poor.,2026-08-02 03:00:00,negative
+61,Twitter,Everything appreciate excellent.,2026-08-02 08:00:00,positive
+62,Reddit,The service love fantastic.,2026-08-02 09:00:00,positive
+63,YouTube,Customer support love smooth.,2026-08-02 10:00:00,positive
+64,Instagram,The interface enjoy wonderful.,2026-08-02 11:00:00,positive
+65,Facebook,My team am satisfied with reliable.,2026-08-02 12:00:00,positive
+66,Twitter,The service enjoy great.,2026-08-02 13:00:00,positive
+67,Reddit,I enjoy amazing.,2026-08-02 14:00:00,positive
+68,YouTube,My team love good.,2026-08-02 15:00:00,positive
+69,Instagram,This product am satisfied with great.,2026-08-02 16:00:00,positive
+70,Facebook,The service recommend amazing.,2026-08-02 17:00:00,positive
+71,Twitter,This product admire fantastic.,2026-08-02 18:00:00,positive
+72,Reddit,The app love outstanding.,2026-08-02 19:00:00,positive
+73,YouTube,The new update am happy with outstanding.,2026-08-02 20:00:00,positive
+74,Instagram,My team am satisfied with fantastic.,2026-08-02 21:00:00,positive
+75,Facebook,The new update appreciate good.,2026-08-02 22:00:00,positive
+76,Twitter,Everything love fantastic.,2026-08-02 23:00:00,positive
+77,Reddit,This product am pleased with brilliant.,2026-08-03 00:00:00,positive
+78,YouTube,The design am satisfied with great.,2026-08-03 01:00:00,positive
+79,Instagram,Everything appreciate good.,2026-08-03 02:00:00,positive
+80,Facebook,The new update recommend fantastic.,2026-08-03 03:00:00,positive
+81,Twitter,The app received today.,2026-08-02 08:00:00,neutral
+82,Reddit,The app downloaded this morning.,2026-08-02 09:00:00,neutral
+83,YouTube,The setting downloaded at nine.,2026-08-02 10:00:00,neutral
+84,Instagram,The store viewed once a week.,2026-08-02 11:00:00,neutral
+85,Facebook,The invoice opened on Monday.,2026-08-02 12:00:00,neutral
+86,Twitter,The meeting viewed on Monday.,2026-08-02 13:00:00,neutral
+87,Reddit,I received this morning.,2026-08-02 14:00:00,neutral
+88,YouTube,The app opened yesterday.,2026-08-02 15:00:00,neutral
+89,Instagram,The meeting viewed from the website.,2026-08-02 16:00:00,neutral
+90,Facebook,The package checked from the website.,2026-08-02 17:00:00,neutral
+91,Twitter,The report started in the afternoon.,2026-08-02 18:00:00,neutral
+92,Reddit,The app checked yesterday.,2026-08-02 19:00:00,neutral
+93,YouTube,The invoice received in my inbox.,2026-08-02 20:00:00,neutral
+94,Instagram,The invoice received on Monday.,2026-08-02 21:00:00,neutral
+95,Facebook,The meeting closed in my inbox.,2026-08-02 22:00:00,neutral
+96,Twitter,The report scheduled this morning.,2026-08-02 23:00:00,neutral
+97,Reddit,The package checked in my inbox.,2026-08-03 00:00:00,neutral
+98,YouTube,The email closed today.,2026-08-03 01:00:00,neutral
+99,Instagram,The meeting opened on Monday.,2026-08-03 02:00:00,neutral
+100,Facebook,The email received tomorrow.,2026-08-03 03:00:00,neutral
+101,Twitter,The app hate broken.,2026-08-02 08:00:00,negative
+102,Reddit,Everything am angry about confusing.,2026-08-02 09:00:00,negative
+103,YouTube,The service am angry about poor.,2026-08-02 10:00:00,negative
+104,Instagram,The service can't stand terrible.,2026-08-02 11:00:00,negative
+105,Facebook,My team am frustrated by confusing.,2026-08-02 12:00:00,negative
+106,Twitter,The service can't stand unacceptable.,2026-08-02 13:00:00,negative
+107,Reddit,The app struggle with broken.,2026-08-02 14:00:00,negative
+108,YouTube,The new update am frustrated by horrible.,2026-08-02 15:00:00,negative
+109,Instagram,The service dislike broken.,2026-08-02 16:00:00,negative
+110,Facebook,Everything can't stand confusing.,2026-08-02 17:00:00,negative
+111,Twitter,The app am frustrated by poor.,2026-08-02 18:00:00,negative
+112,Reddit,My team struggle with horrible.,2026-08-02 19:00:00,negative
+113,YouTube,The new update am angry about awful.,2026-08-02 20:00:00,negative
+114,Instagram,This product am angry about awful.,2026-08-02 21:00:00,negative
+115,Facebook,My team regret horrible.,2026-08-02 22:00:00,negative
+116,Twitter,My team regret unacceptable.,2026-08-02 23:00:00,negative
+117,Reddit,This product abandoned unreliable.,2026-08-03 00:00:00,negative
+118,YouTube,The app abandoned terrible.,2026-08-03 01:00:00,negative
+119,Instagram,This product am disappointed with terrible.,2026-08-03 02:00:00,negative
+120,Facebook,Customer support dislike broken.,2026-08-03 03:00:00,negative
+121,Twitter,My team am satisfied with perfect.,2026-08-03 08:00:00,positive
+122,Reddit,My team value fantastic.,2026-08-03 09:00:00,positive
+123,YouTube,Customer support recommend amazing.,2026-08-03 10:00:00,positive
+124,Instagram,The new update am satisfied with outstanding.,2026-08-03 11:00:00,positive
+125,Facebook,Everything am satisfied with reliable.,2026-08-03 12:00:00,positive
+126,Twitter,The app enjoy excellent.,2026-08-03 13:00:00,positive
+127,Reddit,This product admire excellent.,2026-08-03 14:00:00,positive
+128,YouTube,The interface recommend smooth.,2026-08-03 15:00:00,positive
+129,Instagram,Everything admire fantastic.,2026-08-03 16:00:00,positive
+130,Facebook,My team am satisfied with wonderful.,2026-08-03 17:00:00,positive
+131,Twitter,I am happy with fantastic.,2026-08-03 18:00:00,positive
+132,Reddit,Customer support love great.,2026-08-03 19:00:00,positive
+133,YouTube,The interface recommend good.,2026-08-03 20:00:00,positive
+134,Instagram,Customer support am happy with smooth.,2026-08-03 21:00:00,positive
+135,Facebook,The design am satisfied with excellent.,2026-08-03 22:00:00,positive
+136,Twitter,This product am pleased with wonderful.,2026-08-03 23:00:00,positive
+137,Reddit,I recommend fantastic.,2026-08-04 00:00:00,positive
+138,YouTube,The design value brilliant.,2026-08-04 01:00:00,positive
+139,Instagram,The new update value wonderful.,2026-08-04 02:00:00,positive
+140,Facebook,I value perfect.,2026-08-04 03:00:00,positive
+141,Twitter,The email updated in my inbox.,2026-08-03 08:00:00,neutral
+142,Reddit,The email closed once a week.,2026-08-03 09:00:00,neutral
+143,YouTube,The report started this morning.,2026-08-03 10:00:00,neutral
+144,Instagram,The report downloaded at nine.,2026-08-03 11:00:00,neutral
+145,Facebook,The app opened tomorrow.,2026-08-03 12:00:00,neutral
+146,Twitter,The email started tomorrow.,2026-08-03 13:00:00,neutral
+147,Reddit,The report received yesterday.,2026-08-03 14:00:00,neutral
+148,YouTube,The setting received once a week.,2026-08-03 15:00:00,neutral
+149,Instagram,The store checked from the website.,2026-08-03 16:00:00,neutral
+150,Facebook,The invoice viewed in my inbox.,2026-08-03 17:00:00,neutral
+151,Twitter,The report viewed once a week.,2026-08-03 18:00:00,neutral
+152,Reddit,The email updated today.,2026-08-03 19:00:00,neutral
+153,YouTube,The meeting viewed tomorrow.,2026-08-03 20:00:00,neutral
+154,Instagram,The setting opened yesterday.,2026-08-03 21:00:00,neutral
+155,Facebook,The invoice checked this morning.,2026-08-03 22:00:00,neutral
+156,Twitter,The app closed at nine.,2026-08-03 23:00:00,neutral
+157,Reddit,The app viewed at nine.,2026-08-04 00:00:00,neutral
+158,YouTube,I opened on Monday.,2026-08-04 01:00:00,neutral
+159,Instagram,The user started at nine.,2026-08-04 02:00:00,neutral
+160,Facebook,The setting downloaded today.,2026-08-04 03:00:00,neutral
+161,Twitter,The new update am angry about confusing.,2026-08-03 08:00:00,negative
+162,Reddit,My team abandoned horrible.,2026-08-03 09:00:00,negative
+163,YouTube,Everything am angry about awful.,2026-08-03 10:00:00,negative
+164,Instagram,The interface am unhappy with terrible.,2026-08-03 11:00:00,negative
+165,Facebook,The new update am unhappy with useless.,2026-08-03 12:00:00,negative
+166,Twitter,This product hate frustrating.,2026-08-03 13:00:00,negative
+167,Reddit,I abandoned awful.,2026-08-03 14:00:00,negative
+168,YouTube,The new update abandoned unreliable.,2026-08-03 15:00:00,negative
+169,Instagram,Customer support dislike bad.,2026-08-03 16:00:00,negative
+170,Facebook,Everything am disappointed with bad.,2026-08-03 17:00:00,negative
+171,Twitter,The app abandoned broken.,2026-08-03 18:00:00,negative
+172,Reddit,Everything hate broken.,2026-08-03 19:00:00,negative
+173,YouTube,The delivery am disappointed with poor.,2026-08-03 20:00:00,negative
+174,Instagram,The app abandoned useless.,2026-08-03 21:00:00,negative
+175,Facebook,My team abandoned useless.,2026-08-03 22:00:00,negative
+176,Twitter,The delivery can't stand frustrating.,2026-08-03 23:00:00,negative
+177,Reddit,The app am frustrated by broken.,2026-08-04 00:00:00,negative
+178,YouTube,The delivery am frustrated by useless.,2026-08-04 01:00:00,negative
+179,Instagram,Customer support am frustrated by confusing.,2026-08-04 02:00:00,negative
+180,Facebook,This product struggle with useless.,2026-08-04 03:00:00,negative
+181,Twitter,The interface enjoy amazing.,2026-08-04 08:00:00,positive
+182,Reddit,The interface am satisfied with excellent.,2026-08-04 09:00:00,positive
+183,YouTube,Customer support recommend reliable.,2026-08-04 10:00:00,positive
+184,Instagram,Everything recommend outstanding.,2026-08-04 11:00:00,positive
+185,Facebook,The interface appreciate great.,2026-08-04 12:00:00,positive
+186,Twitter,The new update appreciate outstanding.,2026-08-04 13:00:00,positive
+187,Reddit,I am thrilled with brilliant.,2026-08-04 14:00:00,positive
+188,YouTube,The design recommend smooth.,2026-08-04 15:00:00,positive
+189,Instagram,Customer support enjoy good.,2026-08-04 16:00:00,positive
+190,Facebook,The app am pleased with reliable.,2026-08-04 17:00:00,positive
+191,Twitter,The design am happy with excellent.,2026-08-04 18:00:00,positive
+192,Reddit,This product recommend brilliant.,2026-08-04 19:00:00,positive
+193,YouTube,The app recommend great.,2026-08-04 20:00:00,positive
+194,Instagram,My team recommend amazing.,2026-08-04 21:00:00,positive
+195,Facebook,I appreciate wonderful.,2026-08-04 22:00:00,positive
+196,Twitter,The service am thrilled with fantastic.,2026-08-04 23:00:00,positive
+197,Reddit,The design love smooth.,2026-08-05 00:00:00,positive
+198,YouTube,The design am pleased with brilliant.,2026-08-05 01:00:00,positive
+199,Instagram,Customer support am thrilled with amazing.,2026-08-05 02:00:00,positive
+200,Facebook,I recommend smooth.,2026-08-05 03:00:00,positive
+201,Twitter,The app closed yesterday.,2026-08-04 08:00:00,neutral
+202,Reddit,The report viewed tomorrow.,2026-08-04 09:00:00,neutral
+203,YouTube,The store closed today.,2026-08-04 10:00:00,neutral
+204,Instagram,The email updated from the website.,2026-08-04 11:00:00,neutral
+205,Facebook,The invoice received in the afternoon.,2026-08-04 12:00:00,neutral
+206,Twitter,The store viewed today.,2026-08-04 13:00:00,neutral
+207,Reddit,I viewed today.,2026-08-04 14:00:00,neutral
+208,YouTube,The invoice downloaded at nine.,2026-08-04 15:00:00,neutral
+209,Instagram,The setting viewed at nine.,2026-08-04 16:00:00,neutral
+210,Facebook,The meeting started from the website.,2026-08-04 17:00:00,neutral
+211,Twitter,The invoice scheduled once a week.,2026-08-04 18:00:00,neutral
+212,Reddit,I checked once a week.,2026-08-04 19:00:00,neutral
+213,YouTube,The app closed from the website.,2026-08-04 20:00:00,neutral
+214,Instagram,The meeting opened from the website.,2026-08-04 21:00:00,neutral
+215,Facebook,The meeting scheduled on Monday.,2026-08-04 22:00:00,neutral
+216,Twitter,The user closed tomorrow.,2026-08-04 23:00:00,neutral
+217,Reddit,The store downloaded yesterday.,2026-08-05 00:00:00,neutral
+218,YouTube,The user started in the afternoon.,2026-08-05 01:00:00,neutral
+219,Instagram,The store downloaded in my inbox.,2026-08-05 02:00:00,neutral
+220,Facebook,The invoice started in my inbox.,2026-08-05 03:00:00,neutral
+221,Twitter,Everything am angry about frustrating.,2026-08-04 08:00:00,negative
+222,Reddit,I am unhappy with horrible.,2026-08-04 09:00:00,negative
+223,YouTube,This product can't stand horrible.,2026-08-04 10:00:00,negative
+224,Instagram,My team can't stand unacceptable.,2026-08-04 11:00:00,negative
+225,Facebook,The delivery am disappointed with awful.,2026-08-04 12:00:00,negative
+226,Twitter,The new update am unhappy with awful.,2026-08-04 13:00:00,negative
+227,Reddit,Customer support abandoned unacceptable.,2026-08-04 14:00:00,negative
+228,YouTube,This product struggle with awful.,2026-08-04 15:00:00,negative
+229,Instagram,Everything can't stand poor.,2026-08-04 16:00:00,negative
+230,Facebook,The app am disappointed with unacceptable.,2026-08-04 17:00:00,negative
+231,Twitter,Everything struggle with horrible.,2026-08-04 18:00:00,negative
+232,Reddit,I am angry about awful.,2026-08-04 19:00:00,negative
+233,YouTube,The delivery hate frustrating.,2026-08-04 20:00:00,negative
+234,Instagram,My team abandoned terrible.,2026-08-04 21:00:00,negative
+235,Facebook,My team hate bad.,2026-08-04 22:00:00,negative
+236,Twitter,The new update am unhappy with terrible.,2026-08-04 23:00:00,negative
+237,Reddit,The service am frustrated by horrible.,2026-08-05 00:00:00,negative
+238,YouTube,I dislike unacceptable.,2026-08-05 01:00:00,negative
+239,Instagram,The app abandoned unreliable.,2026-08-05 02:00:00,negative
+240,Facebook,My team can't stand frustrating.,2026-08-05 03:00:00,negative
+241,Twitter,This outage is unacceptable.,2026-08-05 04:00:00,negative
+242,Reddit,The app has been broken all day.,2026-08-05 05:00:00,negative
+243,YouTube,I am furious about the downtime.,2026-08-05 06:00:00,negative
+244,Instagram,Support still has not replied.,2026-08-05 07:00:00,negative
+245,Facebook,This bug ruined my workflow.,2026-08-05 08:00:00,negative
+246,Twitter,The latest patch introduced new errors.,2026-08-05 09:00:00,negative
+247,Reddit,I lost data because of this failure.,2026-08-05 10:00:00,negative
+248,YouTube,This is the third crash today.,2026-08-05 11:00:00,negative
+249,Instagram,Billing charged me twice.,2026-08-05 12:00:00,negative
+250,Facebook,The service is completely unreliable.,2026-08-05 13:00:00,negative
+251,Twitter,The new update am thrilled with outstanding.,2026-08-05 08:00:00,positive
+252,Reddit,My team admire amazing.,2026-08-05 09:00:00,positive
+253,YouTube,The interface am pleased with amazing.,2026-08-05 10:00:00,positive
+254,Instagram,The app admire excellent.,2026-08-05 11:00:00,positive
+255,Facebook,My team enjoy outstanding.,2026-08-05 12:00:00,positive
+256,Twitter,I am happy with wonderful.,2026-08-05 13:00:00,positive
+257,Reddit,I enjoy great.,2026-08-05 14:00:00,positive
+258,YouTube,The design am happy with smooth.,2026-08-05 15:00:00,positive
+259,Instagram,I enjoy excellent.,2026-08-05 16:00:00,positive
+260,Facebook,My team admire good.,2026-08-05 17:00:00,positive
+261,Twitter,Customer support appreciate perfect.,2026-08-05 18:00:00,positive
+262,Reddit,The service enjoy wonderful.,2026-08-05 19:00:00,positive
+263,YouTube,The interface am pleased with fantastic.,2026-08-05 20:00:00,positive
+264,Instagram,The service am satisfied with great.,2026-08-05 21:00:00,positive
+265,Facebook,The service recommend excellent.,2026-08-05 22:00:00,positive
+266,Twitter,The app admire great.,2026-08-05 23:00:00,positive
+267,Reddit,The app am satisfied with brilliant.,2026-08-06 00:00:00,positive
+268,YouTube,I admire excellent.,2026-08-06 01:00:00,positive
+269,Instagram,The new update am happy with fantastic.,2026-08-06 02:00:00,positive
+270,Facebook,Customer support am thrilled with excellent.,2026-08-06 03:00:00,positive
+271,Twitter,The user viewed tomorrow.,2026-08-05 08:00:00,neutral
+272,Reddit,The setting scheduled on Monday.,2026-08-05 09:00:00,neutral
+273,YouTube,The email received from the website.,2026-08-05 10:00:00,neutral
+274,Instagram,The meeting received this morning.,2026-08-05 11:00:00,neutral
+275,Facebook,The email scheduled in my inbox.,2026-08-05 12:00:00,neutral
+276,Twitter,The invoice updated this morning.,2026-08-05 13:00:00,neutral
+277,Reddit,The email checked today.,2026-08-05 14:00:00,neutral
+278,YouTube,The package started on Monday.,2026-08-05 15:00:00,neutral
+279,Instagram,The user opened tomorrow.,2026-08-05 16:00:00,neutral
+280,Facebook,The store read yesterday.,2026-08-05 17:00:00,neutral
+281,Twitter,The email downloaded tomorrow.,2026-08-05 18:00:00,neutral
+282,Reddit,The user scheduled at nine.,2026-08-05 19:00:00,neutral
+283,YouTube,The store received in my inbox.,2026-08-05 20:00:00,neutral
+284,Instagram,The setting started from the website.,2026-08-05 21:00:00,neutral
+285,Facebook,The app received yesterday.,2026-08-05 22:00:00,neutral
+286,Twitter,The setting started in the afternoon.,2026-08-05 23:00:00,neutral
+287,Reddit,The invoice closed in the afternoon.,2026-08-06 00:00:00,neutral
+288,YouTube,The invoice received at nine.,2026-08-06 01:00:00,neutral
+289,Instagram,The meeting closed tomorrow.,2026-08-06 02:00:00,neutral
+290,Facebook,The package opened in the afternoon.,2026-08-06 03:00:00,neutral
+291,Twitter,The app am angry about awful.,2026-08-05 08:00:00,negative
+292,Reddit,The delivery dislike unreliable.,2026-08-05 09:00:00,negative
+293,YouTube,I abandoned unacceptable.,2026-08-05 10:00:00,negative
+294,Instagram,Customer support regret terrible.,2026-08-05 11:00:00,negative
+295,Facebook,I struggle with unacceptable.,2026-08-05 12:00:00,negative
+296,Twitter,Everything am disappointed with poor.,2026-08-05 13:00:00,negative
+297,Reddit,The app abandoned poor.,2026-08-05 14:00:00,negative
+298,YouTube,I am unhappy with broken.,2026-08-05 15:00:00,negative
+299,Instagram,The delivery regret horrible.,2026-08-05 16:00:00,negative
+300,Facebook,I dislike horrible.,2026-08-05 17:00:00,negative
+301,Twitter,The app am unhappy with unacceptable.,2026-08-05 18:00:00,negative
+302,Reddit,The delivery abandoned terrible.,2026-08-05 19:00:00,negative
+303,YouTube,Everything dislike confusing.,2026-08-05 20:00:00,negative
+304,Instagram,I regret bad.,2026-08-05 21:00:00,negative
+305,Facebook,Customer support am frustrated by unacceptable.,2026-08-05 22:00:00,negative
+306,Twitter,Everything abandoned confusing.,2026-08-05 23:00:00,negative
+307,Reddit,The service dislike horrible.,2026-08-06 00:00:00,negative
+308,YouTube,My team hate terrible.,2026-08-06 01:00:00,negative
+309,Instagram,I struggle with horrible.,2026-08-06 02:00:00,negative
+310,Facebook,The app hate horrible.,2026-08-06 03:00:00,negative
