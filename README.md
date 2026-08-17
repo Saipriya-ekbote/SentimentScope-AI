@@ -137,3 +137,24 @@ On the synthetic demonstration dataset (`sample_data.csv`), the model achieves t
 - **Advanced NLP:** Utilize deep learning models (e.g., BERT) or multilingual embeddings for robust sentiment analysis.
 - **Real-Time Streaming:** Move from batch CSV processing to a real-time message broker like Kafka.
 - **Notification Integrations:** Send alerts to Slack, Discord, or Email automatically.
+
+## 🗺️ Project Roadmap
+
+### Completed
+- [x] Initial project setup
+- [x] Sentiment analysis
+- [x] Basic Streamlit dashboard
+
+### In Progress
+- [ ] Improve data preprocessing
+- [ ] Improve sentiment model
+- [ ] Add social media data integration
+- [ ] Improve spike detection
+- [ ] Add time-series analysis
+
+###  Planned
+- [ ] Real-time sentiment monitoring
+- [ ] Sentiment trend visualization
+- [ ] Automatic spike alerts
+- [ ] Model performance dashboard
+- [ ] Deploy improved version
