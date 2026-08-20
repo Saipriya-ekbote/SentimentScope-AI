@@ -36,6 +36,8 @@ def load_csv(path: str | Path) -> pd.DataFrame:
         raise ValueError(
             f"Missing required columns: {', '.join(missing_columns)}"
         )
+    if df["id"].duplicated().any():
+        raise ValueError("Duplicate IDs found in dataset.")
 
     df = df[REQUIRED_COLUMNS].copy()
     df["text"] = df["text"].astype(str).str.strip()
