@@ -16,6 +16,10 @@ def test_clean_text_removes_urls() -> None:
     assert clean_text("Check this out https://example.com now") == "check this out now"
 
 
+def test_clean_text_removes_www_urls() -> None:
+    assert clean_text("Visit www.example.com now") == "visit now"
+
+
 def test_clean_text_handles_missing_values() -> None:
     assert clean_text(None) == ""
     assert clean_text(float("nan")) == ""
