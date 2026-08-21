@@ -13,6 +13,7 @@ from src.data_loader import load_csv
 from src.preprocessing import preprocess_dataframe
 from src.sentiment import (
     aggregate_sentiment_over_time,
+    compare_models,
     get_or_train_model,
     get_sentiment_stats,
     predict_sentiment,
@@ -35,6 +36,11 @@ def load_dataset(path: str) -> pd.DataFrame:
 def load_sentiment_model(dataframe: pd.DataFrame, model_path: str):
     """Load an existing model or train and save a new one."""
     return get_or_train_model(dataframe, model_path=model_path)
+
+@st.cache_data(show_spinner="Comparing sentiment models...")
+def run_model_comparison(dataframe: pd.DataFrame):
+    """Compare Logistic Regression and Linear SVM."""
+    return compare_models(dataframe)
 
 
 def platform_summary(df: pd.DataFrame) -> pd.DataFrame:
@@ -80,6 +86,30 @@ def main() -> None:
         st.error(f"Model loading/training failed: {exc}")
         st.stop()
 
+    try:
+        model_comparison = run_model_comparison(df)
+    except Exception as exc:  # noqa: BLE001
+        st.error(f"Model comparison failed: {exc}")
+        st.stop()
+
+        st.subheader("Model Comparison")
+
+    comparison_rows = []
+
+    for model_name, metrics in model_comparison.items():
+        comparison_rows.append(
+            {
+                "Model": model_name,
+                "Accuracy": round(metrics["accuracy"], 4),
+                "Precision": round(metrics["precision"], 4),
+                "Recall": round(metrics["recall"], 4),
+                "F1 Score": round(metrics["f1_score"], 4),
+            }
+        )
+
+    comparison_df = pd.DataFrame(comparison_rows)
+    st.dataframe(comparison_df, use_container_width=True)
+    
     stats = get_sentiment_stats(df)
     time_series = aggregate_sentiment_over_time(df, period=period)
     spikes = detect_negative_spikes(time_series, z_threshold=z_threshold)
@@ -170,7 +200,6 @@ def main() -> None:
                 st.write(f"Confidence: **{result['confidence'] * 100:.1f}%**")
             except ValueError as exc:
                 st.error(str(exc))
-
 
 if __name__ == "__main__":
     main()

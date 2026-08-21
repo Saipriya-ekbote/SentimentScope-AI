@@ -10,6 +10,8 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -49,6 +51,28 @@ def build_pipeline() -> Pipeline:
         ]
     )
 
+def build_svm_pipeline() -> Pipeline:
+    """Create the TF-IDF + LinearSVC pipeline."""
+    return Pipeline(
+        [
+            (
+                "tfidf",
+                TfidfVectorizer(
+                    max_features=5000,
+                    ngram_range=(1, 2),
+                    min_df=1,
+                ),
+            ),
+            (
+                "classifier",
+                LinearSVC(
+                    C=1.0,
+                    class_weight="balanced",
+                    random_state=RANDOM_STATE,
+                ),
+            ),
+        ]
+    )
 
 def train_model(
     df: pd.DataFrame,
@@ -107,6 +131,101 @@ def train_model(
     }
     return pipeline, metrics
 
+def compare_models(
+    df: pd.DataFrame,
+    text_column: str = "text",
+    label_column: str = "sentiment",
+    test_size: float = 0.2,
+) -> dict[str, dict[str, Any]]:
+    """Compare Logistic Regression and LinearSVC on the same train/test split."""
+    
+    if text_column not in df.columns or label_column not in df.columns:
+        raise ValueError("Training DataFrame must include text and sentiment columns.")
+
+    texts = df[text_column].astype(str)
+    labels = df[label_column].astype(str)
+
+    if texts.empty:
+        raise ValueError("Cannot train on an empty dataset.")
+
+    if labels.nunique() < 2:
+        raise ValueError("Model comparison requires at least two sentiment classes.")
+
+    stratify = (
+        labels
+        if labels.nunique() > 1 and labels.value_counts().min() >= 2
+        else None
+    )
+
+    split_kwargs: dict[str, Any] = {
+        "test_size": test_size,
+        "random_state": RANDOM_STATE,
+    }
+
+    if stratify is not None:
+        split_kwargs["stratify"] = labels
+
+    x_train, x_test, y_train, y_test = train_test_split(
+        texts,
+        labels,
+        **split_kwargs,
+    )
+
+    models = {
+        "Logistic Regression": build_pipeline(),
+        "Linear SVM": build_svm_pipeline(),
+    }
+
+    results: dict[str, dict[str, Any]] = {}
+
+    for model_name, pipeline in models.items():
+        pipeline.fit(x_train, y_train)
+        predictions = pipeline.predict(x_test)
+
+        results[model_name] = {
+            "accuracy": float(
+                accuracy_score(y_test, predictions)
+            ),
+            "precision": float(
+                precision_score(
+                    y_test,
+                    predictions,
+                    average="weighted",
+                    zero_division=0,
+                )
+            ),
+            "recall": float(
+                recall_score(
+                    y_test,
+                    predictions,
+                    average="weighted",
+                    zero_division=0,
+                )
+            ),
+            "f1_score": float(
+                f1_score(
+                    y_test,
+                    predictions,
+                    average="weighted",
+                    zero_division=0,
+                )
+            ),
+            "confusion_matrix": confusion_matrix(
+                y_test,
+                predictions,
+                labels=SENTIMENT_LABELS,
+            ).tolist(),
+            "classification_report": classification_report(
+                y_test,
+                predictions,
+                labels=SENTIMENT_LABELS,
+                zero_division=0,
+            ),
+            "train_size": len(x_train),
+            "test_size": len(x_test),
+        }
+
+    return results
 
 def save_model(pipeline: Pipeline, path: str | Path = DEFAULT_MODEL_PATH) -> Path:
     """Persist a trained pipeline to disk."""
