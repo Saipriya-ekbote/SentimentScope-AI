@@ -5,7 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-import joblib
+try:
+    import joblib
+except ImportError:  # pragma: no cover
+    joblib = None  # type: ignore
 import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
