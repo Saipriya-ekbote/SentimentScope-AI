@@ -17,6 +17,7 @@ from src.sentiment import (
     get_or_train_model,
     get_sentiment_stats,
     predict_sentiment,
+    SENTIMENT_LABELS,
 )
 from src.spike_detection import detect_negative_spikes
 
@@ -94,21 +95,37 @@ def main() -> None:
 
         st.subheader("Model Comparison")
 
-    comparison_rows = []
+        # Build a summary table
+        comparison_rows = []
+        for model_name, metrics in model_comparison.items():
+            comparison_rows.append(
+                {
+                    "Model": model_name,
+                    "Accuracy": round(metrics["accuracy"], 4),
+                    "Precision": round(metrics["precision"], 4),
+                    "Recall": round(metrics["recall"], 4),
+                    "F1 Score": round(metrics["f1_score"], 4),
+                }
+            )
+        comparison_df = pd.DataFrame(comparison_rows)
+        st.dataframe(comparison_df, use_container_width=True)
 
-    for model_name, metrics in model_comparison.items():
-        comparison_rows.append(
-            {
-                "Model": model_name,
-                "Accuracy": round(metrics["accuracy"], 4),
-                "Precision": round(metrics["precision"], 4),
-                "Recall": round(metrics["recall"], 4),
-                "F1 Score": round(metrics["f1_score"], 4),
-            }
-        )
+        # Highlight best model by F1 score
+        if not comparison_df.empty:
+            best_idx = comparison_df["F1 Score"].idxmax()
+            best_model = comparison_df.loc[best_idx, "Model"]
+            best_f1 = comparison_df.loc[best_idx, "F1 Score"]
+            st.success(f"**Best model (by F1 Score): {best_model}** (F1 = {best_f1})")
 
-    comparison_df = pd.DataFrame(comparison_rows)
-    st.dataframe(comparison_df, use_container_width=True)
+        # Detailed diagnostics per model
+        for model_name, metrics in model_comparison.items():
+            st.subheader(f"{model_name} details")
+            cm = metrics["confusion_matrix"]
+            cm_df = pd.DataFrame(cm, index=SENTIMENT_LABELS, columns=SENTIMENT_LABELS)
+            with st.expander("Confusion Matrix"):
+                st.dataframe(cm_df)
+            with st.expander("Classification Report"):
+                st.text(metrics["classification_report"])
     
     stats = get_sentiment_stats(df)
     time_series = aggregate_sentiment_over_time(df, period=period)
