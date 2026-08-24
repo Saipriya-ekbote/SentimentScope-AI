@@ -77,41 +77,85 @@ def build_svm_pipeline() -> Pipeline:
         ]
     )
 
-def train_model(
+def _validate_and_split_data(
     df: pd.DataFrame,
     text_column: str = "text",
     label_column: str = "sentiment",
-    test_size: float = 0.2,
-) -> tuple[Pipeline, dict[str, Any]]:
-    """Train the sentiment model and return metrics from the held-out test set."""
+    test_size: float | int = 0.2,
+    random_state: int = RANDOM_STATE,
+) -> tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
+    """Validate input DataFrame and perform a reproducible train/test split with stratification when possible."""
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError("Input must be a pandas DataFrame.")
+
+    if df.empty:
+        raise ValueError("Cannot train or evaluate models on an empty DataFrame.")
+
     if text_column not in df.columns or label_column not in df.columns:
-        raise ValueError("Training DataFrame must include text and sentiment columns.")
+        raise ValueError(
+            f"Training DataFrame must include '{text_column}' and '{label_column}' columns."
+        )
+
+    if isinstance(test_size, bool) or not isinstance(test_size, (float, int)):
+        raise ValueError("test_size must be a float or integer.")
+
+    if isinstance(test_size, float) and (test_size <= 0.0 or test_size >= 1.0):
+        raise ValueError("test_size as a float must be strictly between 0.0 and 1.0.")
+
+    if isinstance(test_size, int) and (test_size < 1 or test_size >= len(df)):
+        raise ValueError(f"test_size as an integer must be between 1 and {len(df) - 1}.")
+
+    if len(df) < 2:
+        raise ValueError("Dataset must contain at least two samples for evaluation.")
 
     texts = df[text_column].astype(str)
     labels = df[label_column].astype(str)
 
-    if texts.empty:
-        raise ValueError("Cannot train on an empty dataset.")
+    if texts.str.strip().eq("").all():
+        raise ValueError("Text column contains only empty or whitespace strings.")
 
     unique_labels = sorted(labels.unique())
     if len(unique_labels) < 2:
         raise ValueError("Training requires at least two sentiment classes.")
 
-    stratify = labels if labels.nunique() > 1 and labels.value_counts().min() >= 2 else None
+    stratify = (
+        labels
+        if (labels.nunique() > 1 and labels.value_counts().min() >= 2)
+        else None
+    )
+
     split_kwargs: dict[str, Any] = {
         "test_size": test_size,
-        "random_state": RANDOM_STATE,
+        "random_state": random_state,
     }
+
     if stratify is not None:
-        split_kwargs["stratify"] = labels
+        try:
+            x_train, x_test, y_train, y_test = train_test_split(
+                texts, labels, stratify=labels, **split_kwargs
+            )
+        except ValueError:
+            # Fallback if stratified split is not possible with small class counts and chosen test_size
+            x_train, x_test, y_train, y_test = train_test_split(
+                texts, labels, **split_kwargs
+            )
+    else:
+        x_train, x_test, y_train, y_test = train_test_split(
+            texts, labels, **split_kwargs
+        )
 
-    x_train, x_test, y_train, y_test = train_test_split(texts, labels, **split_kwargs)
+    return x_train, x_test, y_train, y_test
 
-    pipeline = build_pipeline()
-    pipeline.fit(x_train, y_train)
-    predictions = pipeline.predict(x_test)
 
-    metrics = {
+def _compute_evaluation_metrics(
+    y_test: pd.Series | np.ndarray,
+    predictions: pd.Series | np.ndarray,
+    train_size: int,
+    test_size: int,
+    classes: list[str] | None = None,
+) -> dict[str, Any]:
+    """Compute standard classification evaluation metrics on the held-out test set."""
+    metrics: dict[str, Any] = {
         "accuracy": float(accuracy_score(y_test, predictions)),
         "precision": float(
             precision_score(y_test, predictions, average="weighted", zero_division=0)
@@ -128,11 +172,42 @@ def train_model(
         "classification_report": classification_report(
             y_test, predictions, labels=SENTIMENT_LABELS, zero_division=0
         ),
-        "classes": list(pipeline.classes_),
-        "train_size": len(x_train),
-        "test_size": len(x_test),
+        "train_size": train_size,
+        "test_size": test_size,
     }
+    if classes is not None:
+        metrics["classes"] = classes
+    return metrics
+
+
+def train_model(
+    df: pd.DataFrame,
+    text_column: str = "text",
+    label_column: str = "sentiment",
+    test_size: float = 0.2,
+) -> tuple[Pipeline, dict[str, Any]]:
+    """Train the sentiment model and return metrics from the held-out test set."""
+    x_train, x_test, y_train, y_test = _validate_and_split_data(
+        df=df,
+        text_column=text_column,
+        label_column=label_column,
+        test_size=test_size,
+        random_state=RANDOM_STATE,
+    )
+
+    pipeline = build_pipeline()
+    pipeline.fit(x_train, y_train)
+    predictions = pipeline.predict(x_test)
+
+    metrics = _compute_evaluation_metrics(
+        y_test=y_test,
+        predictions=predictions,
+        train_size=len(x_train),
+        test_size=len(x_test),
+        classes=list(pipeline.classes_),
+    )
     return pipeline, metrics
+
 
 def compare_models(
     df: pd.DataFrame,
@@ -140,38 +215,17 @@ def compare_models(
     label_column: str = "sentiment",
     test_size: float = 0.2,
 ) -> dict[str, dict[str, Any]]:
-    """Compare Logistic Regression and LinearSVC on the same train/test split."""
-    
-    if text_column not in df.columns or label_column not in df.columns:
-        raise ValueError("Training DataFrame must include text and sentiment columns.")
+    """Compare Logistic Regression and LinearSVC on the exact same train/test split.
 
-    texts = df[text_column].astype(str)
-    labels = df[label_column].astype(str)
-
-    if texts.empty:
-        raise ValueError("Cannot train on an empty dataset.")
-
-    if labels.nunique() < 2:
-        raise ValueError("Model comparison requires at least two sentiment classes.")
-
-    stratify = (
-        labels
-        if labels.nunique() > 1 and labels.value_counts().min() >= 2
-        else None
-    )
-
-    split_kwargs: dict[str, Any] = {
-        "test_size": test_size,
-        "random_state": RANDOM_STATE,
-    }
-
-    if stratify is not None:
-        split_kwargs["stratify"] = labels
-
-    x_train, x_test, y_train, y_test = train_test_split(
-        texts,
-        labels,
-        **split_kwargs,
+    Evaluates both models on a held-out test partition with no data leakage.
+    TF-IDF feature extraction is fitted strictly on the training set.
+    """
+    x_train, x_test, y_train, y_test = _validate_and_split_data(
+        df=df,
+        text_column=text_column,
+        label_column=label_column,
+        test_size=test_size,
+        random_state=RANDOM_STATE,
     )
 
     models = {
@@ -185,48 +239,13 @@ def compare_models(
         pipeline.fit(x_train, y_train)
         predictions = pipeline.predict(x_test)
 
-        results[model_name] = {
-            "accuracy": float(
-                accuracy_score(y_test, predictions)
-            ),
-            "precision": float(
-                precision_score(
-                    y_test,
-                    predictions,
-                    average="weighted",
-                    zero_division=0,
-                )
-            ),
-            "recall": float(
-                recall_score(
-                    y_test,
-                    predictions,
-                    average="weighted",
-                    zero_division=0,
-                )
-            ),
-            "f1_score": float(
-                f1_score(
-                    y_test,
-                    predictions,
-                    average="weighted",
-                    zero_division=0,
-                )
-            ),
-            "confusion_matrix": confusion_matrix(
-                y_test,
-                predictions,
-                labels=SENTIMENT_LABELS,
-            ).tolist(),
-            "classification_report": classification_report(
-                y_test,
-                predictions,
-                labels=SENTIMENT_LABELS,
-                zero_division=0,
-            ),
-            "train_size": len(x_train),
-            "test_size": len(x_test),
-        }
+        results[model_name] = _compute_evaluation_metrics(
+            y_test=y_test,
+            predictions=predictions,
+            train_size=len(x_train),
+            test_size=len(x_test),
+            classes=list(pipeline.classes_),
+        )
 
     return results
 
