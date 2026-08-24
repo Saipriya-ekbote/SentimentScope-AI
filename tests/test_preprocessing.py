@@ -29,6 +29,39 @@ def test_clean_text_normalizes_whitespace() -> None:
     assert clean_text("too    many   spaces") == "too many spaces"
 
 
+def test_clean_text_decodes_html_entities() -> None:
+    assert clean_text("Service was fast &amp; friendly &lt;3") == "service was fast & friendly <3"
+    assert clean_text("It&#39;s a &quot;must have&quot; item!") == "it's a \"must have\" item!"
+
+
+def test_clean_text_removes_user_handles() -> None:
+    assert clean_text("@username loved this!") == "loved this!"
+    assert clean_text("Hey @support_team please help @user123") == "hey please help"
+
+
+def test_clean_text_preserves_email_addresses() -> None:
+    assert clean_text("Contact support@example.com for help") == "contact support@example.com for help"
+
+
+def test_clean_text_normalizes_hashtags() -> None:
+    assert clean_text("#AmazingProduct #LoveIt") == "amazingproduct loveit"
+    assert clean_text("This is #awesome!") == "this is awesome!"
+
+
+def test_clean_text_compresses_repeated_characters() -> None:
+    assert clean_text("sooooo good") == "soo good"
+    assert clean_text("goooood morning") == "good morning"
+    # Preserves valid double-letter English words
+    assert clean_text("happy coffee week") == "happy coffee week"
+    assert clean_text("noooooooo wayyyyy!!!") == "noo wayy!!"
+
+
+def test_clean_text_combined_social_media_features() -> None:
+    raw = "@customer_care This service is sooooo bad &amp; broken! Check www.status.com #AngryCustomer"
+    expected = "this service is soo bad & broken! check angrycustomer"
+    assert clean_text(raw) == expected
+
+
 def test_preprocess_dataframe_removes_empty_text() -> None:
     df = pd.DataFrame(
         {
