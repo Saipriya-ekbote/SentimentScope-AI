@@ -52,3 +52,48 @@ def test_invalid_rows_are_removed(tmp_path: Path) -> None:
     df = load_csv(csv_path)
     assert len(df) == 1
     assert df.iloc[0]["sentiment"] == "positive"
+
+
+def test_prepare_realistic_data_pipeline(tmp_path: Path) -> None:
+    from scripts.prepare_realistic_data import prepare_realistic_data
+
+    raw_csv = tmp_path / "mock_tweets.csv"
+    output_csv = tmp_path / "mock_output.csv"
+
+    pd.DataFrame(
+        {
+            "tweet_id": [101, 102, 101, 103],  # 101 is duplicate
+            "text": ["Great flight!", "Bad delay", "Great flight duplicate", "Neutral note"],
+            "tweet_created": [
+                "2015-02-20 10:00:00 -0800",
+                "2015-02-20 11:00:00 -0800",
+                "2015-02-20 10:00:00 -0800",
+                "2015-02-20 12:00:00 -0800",
+            ],
+            "airline_sentiment": ["positive", "negative", "positive", "neutral"],
+            "airline": ["Delta", "United", "Delta", "American"],
+        }
+    ).to_csv(raw_csv, index=False)
+
+    df_out = prepare_realistic_data(raw_csv, output_csv)
+    assert len(df_out) == 3
+    assert list(df_out.columns) == ["id", "platform", "text", "timestamp", "sentiment"]
+    assert (df_out["platform"] == "Twitter").all()
+    assert df_out["id"].tolist() == ["101", "102", "103"]
+    assert df_out["sentiment"].tolist() == ["positive", "negative", "neutral"]
+
+    # Verify load_csv can load it
+    loaded_df = load_csv(output_csv)
+    assert len(loaded_df) == 3
+
+
+def test_load_realistic_dataset_file() -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    realistic_path = project_root / "data" / "realistic_social_data.csv"
+    if realistic_path.exists():
+        df = load_csv(realistic_path)
+        assert len(df) == 14485
+        assert list(df.columns) == ["id", "platform", "text", "timestamp", "sentiment"]
+        assert (df["platform"] == "Twitter").all()
+        assert set(df["sentiment"].unique()) == {"positive", "negative", "neutral"}
+        assert df["id"].duplicated().sum() == 0
