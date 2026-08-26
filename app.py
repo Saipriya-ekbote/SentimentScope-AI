@@ -22,8 +22,21 @@ from src.sentiment import (
 from src.spike_detection import detect_negative_spikes
 
 PROJECT_ROOT = Path(__file__).resolve().parent
-DEFAULT_DATA_PATH = PROJECT_ROOT / "data" / "sample_data.csv"
-DEFAULT_MODEL_PATH = PROJECT_ROOT / "models" / "sentiment_model.joblib"
+
+DATASET_CONFIGS = {
+    "Sample Dataset": {
+        "data_path": PROJECT_ROOT / "data" / "sample_data.csv",
+        "model_path": PROJECT_ROOT / "models" / "sentiment_model_sample.joblib",
+        "is_synthetic": True,
+        "description": "Synthetic development/demo dataset across multiple simulated platforms with an injected negative spike.",
+    },
+    "Realistic Twitter Dataset": {
+        "data_path": PROJECT_ROOT / "data" / "realistic_social_data.csv",
+        "model_path": PROJECT_ROOT / "models" / "sentiment_model_realistic.joblib",
+        "is_synthetic": False,
+        "description": "Real-world Twitter US Airline Sentiment dataset (14,485 deduplicated posts) prepared from data/raw/Tweets.csv.",
+    },
+}
 
 
 @st.cache_data(show_spinner=False)
@@ -37,6 +50,7 @@ def load_dataset(path: str) -> pd.DataFrame:
 def load_sentiment_model(dataframe: pd.DataFrame, model_path: str):
     """Load an existing model or train and save a new one."""
     return get_or_train_model(dataframe, model_path=model_path)
+
 
 @st.cache_data(show_spinner="Comparing sentiment models...")
 def run_model_comparison(dataframe: pd.DataFrame):
@@ -63,17 +77,33 @@ def main() -> None:
     st.set_page_config(page_title="SentimentScope AI", layout="wide")
     st.title("SentimentScope AI")
     st.caption("Multi-Platform Social Sentiment Monitor with Spike Alerts")
-    st.info(
-        "This dashboard uses **SYNTHETIC DEVELOPMENT DATA** from a local CSV file. "
-        "It does not connect to live social-media platforms."
-    )
 
-    data_path = st.sidebar.text_input("Dataset path", value=str(DEFAULT_DATA_PATH))
+    dataset_choice = st.sidebar.selectbox(
+        "Select Dataset",
+        options=list(DATASET_CONFIGS.keys()),
+        index=0,
+    )
+    dataset_cfg = DATASET_CONFIGS[dataset_choice]
+    data_path = dataset_cfg["data_path"]
+    model_path = dataset_cfg["model_path"]
+    is_synthetic = dataset_cfg["is_synthetic"]
+
+    if is_synthetic:
+        st.info(
+            "This dashboard uses **SYNTHETIC DEVELOPMENT DATA** from a local CSV file. "
+            "It does not connect to live social-media platforms."
+        )
+    else:
+        st.info(
+            "This dashboard uses the **REAL-WORLD TWITTER DATASET** (Twitter US Airline Sentiment, "
+            "14,485 deduplicated posts). It reflects authentic social-media noise and customer feedback."
+        )
+
     period = st.sidebar.selectbox("Time aggregation", options=["day", "hour"], index=0)
     z_threshold = st.sidebar.slider("Spike z-score threshold", min_value=1.0, max_value=5.0, value=2.0, step=0.1)
 
     try:
-        df = load_dataset(data_path)
+        df = load_dataset(str(data_path))
     except FileNotFoundError as exc:
         st.error(str(exc))
         st.stop()
@@ -82,7 +112,7 @@ def main() -> None:
         st.stop()
 
     try:
-        model, training_metrics = load_sentiment_model(df, str(DEFAULT_MODEL_PATH))
+        model, training_metrics = load_sentiment_model(df, str(model_path))
     except Exception as exc:  # noqa: BLE001 - dashboard must surface failures clearly
         st.error(f"Model loading/training failed: {exc}")
         st.stop()
