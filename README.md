@@ -118,6 +118,28 @@ Both datasets strictly conform to the 5-column schema validated by `src/data_loa
 
 ---
 
+## Normalized Multi-Platform Schema (Phase 2)
+
+The modular ingestion engine in `src/data_collection/` standardizes multi-platform data into a 12-field normalized schema:
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `post_id` | String | Unique identifier across platforms |
+| `platform` | String | Originating platform (`Twitter`, `Reddit`, `Instagram`, `YouTube`, etc.) |
+| `timestamp` | Datetime | Normalized post creation timestamp |
+| `author` | String / Null | Post author or handle if available |
+| `text` | String | Cleaned or raw post text content |
+| `brand` | String / Null | Associated brand (e.g., `Apple`, `Delta`, `Samsung`) |
+| `product` | String / Null | Specific product mentioned (e.g., `iPhone 16`, `Galaxy S25`) |
+| `topic` | String / Null | Operational category (e.g., `Battery`, `Outage`, `Delivery`) |
+| `sentiment` | String / Null | Labeled or predicted sentiment class (`positive`, `negative`, `neutral`) |
+| `sentiment_score` | Float / Null | Continuous sentiment polarity score (-1.0 to 1.0) |
+| `engagement_metrics`| String / Dict / Null | Engagement stats (likes, retweets, upvotes, comments) |
+| `provenance` | String | Data origin tag (`Real`, `Imported`, `Synthetic Demo`) |
+
+
+---
+
 ## Datasets
 
 ### 1. Sample Dataset (`data/sample_data.csv`)

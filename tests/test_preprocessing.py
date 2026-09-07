@@ -5,8 +5,10 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
-from src.preprocessing import clean_text, preprocess_dataframe
+from src.preprocessing import clean_text, preprocess_dataframe, split_hashtag
 
+
+# --- Legacy Tests (Preserved 100%) ---
 
 def test_clean_text_lowercases_and_trims() -> None:
     assert clean_text("  Hello WORLD  ") == "hello world"
@@ -77,3 +79,95 @@ def test_preprocess_dataframe_removes_empty_text() -> None:
 def test_preprocess_dataframe_requires_text_column() -> None:
     with pytest.raises(ValueError, match="Text column not found"):
         preprocess_dataframe(pd.DataFrame({"sentiment": ["positive"]}))
+
+
+# --- Phase 3 Enhanced Preprocessing Tests ---
+
+def test_clean_text_converts_positive_emojis() -> None:
+    result = clean_text("Loving this update 😍🔥❤️")
+    assert "loving this update" in result
+    assert "positive" in result
+    # Emojis should be replaced with text tokens, not raw unicode symbols
+    assert "😍" not in result
+    assert "🔥" not in result
+    assert "❤️" not in result
+
+
+def test_clean_text_converts_negative_emojis() -> None:
+    result = clean_text("Flight cancelled again 😡😭👎")
+    assert "flight cancelled again" in result
+    assert "negative" in result
+    assert "😡" not in result
+    assert "😭" not in result
+    assert "👎" not in result
+
+
+def test_clean_text_handles_unmapped_emojis_safely() -> None:
+    # 🚀 and ☕ are not in the standard sentiment map
+    result = clean_text("Launching our new cafe 🚀☕")
+    assert "launching our new cafe" in result
+    assert "🚀" not in result
+    assert "☕" not in result
+
+
+def test_split_hashtag_utility() -> None:
+    assert split_hashtag("#AmazingProduct") == "amazing product"
+    assert split_hashtag("#WorstServiceEver") == "worst service ever"
+    assert split_hashtag("#simple") == "simple"
+    assert split_hashtag("") == ""
+
+
+def test_clean_text_with_split_hashtags_option() -> None:
+    result = clean_text("Check out this #AmazingProduct!", split_hashtags=True)
+    assert result == "check out this amazing product!"
+
+
+def test_sentiment_preservation_positive() -> None:
+    raw = "OMG!!! This product is AMAZING 😍🔥 #BestProduct"
+    cleaned = clean_text(raw)
+    # Validates that key positive sentiment indicators are preserved
+    assert "omg!!" in cleaned
+    assert "amazing" in cleaned
+    assert "positive" in cleaned
+    assert "bestproduct" in cleaned
+
+
+def test_sentiment_preservation_negative() -> None:
+    raw = "Terrible service 😡😡 #WorstService"
+    cleaned = clean_text(raw)
+    # Validates that key negative sentiment indicators are preserved
+    assert "terrible service" in cleaned
+    assert "negative" in cleaned
+    assert "worstservice" in cleaned
+
+
+def test_clean_text_excessive_punctuation_normalization() -> None:
+    assert clean_text("AMAZING!!!!") == "amazing!!"
+    assert clean_text("Really????") == "really??"
+    assert clean_text("So bad.....") == "so bad.."
+
+
+def test_clean_text_non_string_inputs() -> None:
+    assert clean_text(12345) == "12345"
+    assert clean_text(3.14) == "3.14"
+    assert clean_text(True) == "true"
+
+
+def test_clean_text_empty_and_whitespace_only() -> None:
+    assert clean_text("") == ""
+    assert clean_text("    ") == ""
+    assert clean_text("\t\n") == ""
+
+
+def test_preprocess_dataframe_target_column() -> None:
+    df = pd.DataFrame(
+        {
+            "raw_text": ["Great food 😍", "Terrible 😡"],
+            "sentiment": ["positive", "negative"],
+        }
+    )
+    processed = preprocess_dataframe(df, text_column="raw_text", target_column="clean_text")
+    assert "clean_text" in processed.columns
+    assert "raw_text" in processed.columns
+    assert "positive" in processed.iloc[0]["clean_text"]
+    assert "negative" in processed.iloc[1]["clean_text"]

@@ -1,4 +1,8 @@
-"""Load and validate social-media-style CSV datasets."""
+"""Load and validate social-media-style CSV datasets.
+
+Backward-compatible facade providing legacy `load_csv()` alongside the new
+modular data collection system in `src.data_collection`.
+"""
 
 from __future__ import annotations
 
@@ -6,16 +10,36 @@ from pathlib import Path
 
 import pandas as pd
 
+from config import (
+    NORMALIZED_COLUMNS,
+    PROVENANCE_IMPORTED,
+    PROVENANCE_REAL,
+    PROVENANCE_SYNTHETIC,
+)
+from src.data_collection.base import (
+    BaseDataLoader,
+    ConfigurationError,
+    DataIngestionError,
+)
+from src.data_collection.csv_loader import CSVLoader
+from src.data_collection.json_loader import JSONLoader
+
 REQUIRED_COLUMNS = ["id", "platform", "text", "timestamp", "sentiment"]
 VALID_SENTIMENTS = {"positive", "negative", "neutral"}
 
 
 def load_csv(path: str | Path) -> pd.DataFrame:
-    """Load a CSV file and return a cleaned DataFrame.
+    """Load a CSV file and return a legacy 5-column cleaned DataFrame.
+
+    Maintains exact backward compatibility with existing tests and pipelines:
+    - Verifies file exists (FileNotFoundError).
+    - Checks for required columns ['id', 'platform', 'text', 'timestamp', 'sentiment'].
+    - Checks for duplicate IDs.
+    - Strips whitespace, converts timestamps to datetime, filters invalid sentiments.
 
     Raises:
         FileNotFoundError: If the file does not exist.
-        ValueError: If required columns are missing or no usable rows remain.
+        ValueError: If required columns are missing, duplicate IDs exist, or no usable rows remain.
     """
     file_path = Path(path)
     if not file_path.exists():
@@ -60,3 +84,47 @@ def load_csv(path: str | Path) -> pd.DataFrame:
         )
 
     return df
+
+
+def load_normalized_data(
+    source: str | Path,
+    provenance: str = PROVENANCE_IMPORTED,
+    platform: str | None = None,
+    column_mapping: dict[str, str] | None = None,
+) -> pd.DataFrame:
+    """Load data from CSV or JSON into the standard 12-field normalized schema.
+
+    Args:
+        source: File path (CSV or JSON).
+        provenance: 'Real', 'Imported', or 'Synthetic Demo'.
+        platform: Optional platform override.
+        column_mapping: Optional custom column mapping.
+
+    Returns:
+        pd.DataFrame conforming to NORMALIZED_COLUMNS.
+    """
+    path = Path(source)
+    if path.suffix.lower() == ".json":
+        loader: BaseDataLoader = JSONLoader()
+    else:
+        loader = CSVLoader()
+
+    return loader.load(
+        source=path,
+        provenance=provenance,
+        platform=platform,
+        column_mapping=column_mapping,
+    )
+
+
+__all__ = [
+    "load_csv",
+    "load_normalized_data",
+    "REQUIRED_COLUMNS",
+    "VALID_SENTIMENTS",
+    "CSVLoader",
+    "JSONLoader",
+    "BaseDataLoader",
+    "DataIngestionError",
+    "ConfigurationError",
+]

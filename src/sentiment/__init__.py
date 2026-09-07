@@ -1,13 +1,8 @@
-"""Classical ML sentiment classification, continuous scoring, and evaluation.
-
-Backward-compatibility facade delegating to the modular `src.sentiment` subpackage.
-"""
+"""SentimentScope AI sentiment analysis and scoring package."""
 
 from __future__ import annotations
 
 from src.sentiment.evaluator import (
-    _compute_evaluation_metrics,
-    _validate_and_split_data,
     aggregate_sentiment_over_time,
     compare_models,
     get_or_train_model,
@@ -36,8 +31,6 @@ __all__ = [
     "DEFAULT_MODEL_PATH",
     "RANDOM_STATE",
     "SENTIMENT_LABELS",
-    "_compute_evaluation_metrics",
-    "_validate_and_split_data",
     "aggregate_sentiment_over_time",
     "build_pipeline",
     "build_svm_pipeline",
