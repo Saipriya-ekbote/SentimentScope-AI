@@ -20,7 +20,8 @@ from src.sentiment import (
 )
 from src.time_series import build_time_series
 from src.spike_detection import detect_negative_spikes
-
+from src.entity_detection import EntityDetector
+from src.entity_spike_detection import detect_all_entity_spikes
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 
@@ -149,7 +150,8 @@ def main() -> None:
 
     try:
         df = load_dataset(str(data_path))
-
+        entity_detector = EntityDetector()
+        df = entity_detector.detect_entities_dataframe(df, overwrite=False)
     except FileNotFoundError as exc:
         st.error(str(exc))
         st.stop()
@@ -271,11 +273,20 @@ def main() -> None:
         value_column="negative",
         z_threshold=z_threshold,
     )
+    entity_spikes = detect_all_entity_spikes(
+        df,
+        dimensions=["brand", "product", "topic"],
+        z_threshold=z_threshold,
+        freq=freq,
+    )
 
     # ---------------------------------------------------------
     # Phase 6 - Alert Generation
     # ---------------------------------------------------------
+    global_alerts = generate_alerts(spikes)
+    entity_alerts = generate_alerts(entity_spikes)
 
+    alerts = global_alerts + entity_alerts
 
     # ---------------------------------------------------------
     # Overview
@@ -307,7 +318,8 @@ def main() -> None:
 
     overview_cols[4].metric(
         "Detected Spikes",
-        len(spikes),
+        len(spikes) + len(entity_spikes),
+        delta_color="normal",
     )
 
     # ---------------------------------------------------------
@@ -426,26 +438,40 @@ def main() -> None:
     st.subheader("Spike Alerts")
 
     if alerts:
-
         for alert in alerts:
+            severity = alert["severity"]
 
-            st.warning(
-                f"**{alert['alert_type']}** | "
-                f"Severity: {alert['severity']} | "
-                f"Time: {alert['timestamp']} | "
-                f"Observed: {alert['observed_value']:.0f} | "
-                f"Baseline: {alert['baseline_value']:.2f} | "
-                f"Threshold: {alert['threshold']}"
+            if severity == "CRITICAL":
+                alert_box = st.error
+            elif severity == "HIGH":
+                alert_box = st.warning
+            else:
+                alert_box = st.info
+
+            if "entity" in alert and "dimension" in alert:
+                title = (
+                    f"{severity} | "
+                    f"{alert['dimension'].title()}: "
+                    f"{alert['entity']}"
+                )
+            else:
+                title = severity
+
+            alert_box(
+                f"**{title}**\n\n"
+                f"{alert['message']}\n\n"
+                f"**Observed:** {alert['observed_value']:.0f}  \n"
+                f"**Baseline:** {alert['baseline_value']:.2f}  \n"
+                f"**Increase:** {alert['increase_percent']:.1f}%  \n"
+                f"**Z-score:** {alert['z_score']:.2f}  \n"
+                f"**Priority:** {alert['priority']}  \n"
+                f"**Threshold:** {alert['threshold']}  \n"
+                f"**Time:** {alert['timestamp']}"
             )
-
-            st.write(alert["message"])
-
     else:
-
         st.success(
             "No unusual sentiment spikes detected."
         )
-
     # ---------------------------------------------------------
     # Live Text Prediction
     # ---------------------------------------------------------

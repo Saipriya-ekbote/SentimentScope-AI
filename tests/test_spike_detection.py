@@ -56,3 +56,28 @@ def test_generate_alerts_from_spikes() -> None:
     assert alerts[0]["alert_type"] == "NEGATIVE_SENTIMENT_SPIKE"
     assert alerts[0]["observed_value"] == 45.0
     assert alerts[0]["baseline_value"] == 12.0
+def test_generate_entity_alert():
+    spikes = [
+        {
+            "timestamp": "2026-01-01 05:00:00",
+            "observed_value": 10.0,
+            "baseline_value": 1.0,
+            "z_score": 5.0,
+            "threshold": 2.0,
+            "dimension": "brand",
+            "entity": "Samsung",
+        }
+    ]
+
+    alerts = generate_alerts(spikes)
+
+    assert len(alerts) == 1
+
+    alert = alerts[0]
+
+    assert alert["alert_type"] == "NEGATIVE_SENTIMENT_SPIKE"
+    assert alert["severity"] == "CRITICAL"
+    assert alert["dimension"] == "brand"
+    assert alert["entity"] == "Samsung"
+    assert "Samsung" in alert["message"]
+    assert "Brand" in alert["message"]
