@@ -184,3 +184,8 @@ cython_debug/
 models/*.joblib
 !models/.gitkeep
 data/processed_data.csv
+
+# Local scratch and backup files
+app_backup_*.py
+full_test.png
+project_structure.txt

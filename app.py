@@ -12,6 +12,12 @@ from src.alerts import generate_alerts
 from src.data_loader import load_csv
 from src.entity_detection import EntityDetector
 from src.entity_spike_detection import detect_all_entity_spikes
+from src.insights import (
+    analyze_entity_concentration,
+    analyze_sentiment_trend,
+    format_executive_report,
+    generate_insights,
+)
 from src.preprocessing import preprocess_dataframe
 from src.sentiment import (
     SENTIMENT_LABELS,
@@ -289,6 +295,13 @@ def main() -> None:
     alerts = global_alerts + entity_alerts
 
     # ---------------------------------------------------------
+    # Phase 7 - AI Insights Generation
+    # ---------------------------------------------------------
+    trend_result = analyze_sentiment_trend(time_series)
+    ai_insights = generate_insights(df, time_series, alerts)
+    entity_concentration = analyze_entity_concentration(df)
+
+    # ---------------------------------------------------------
     # Overview
     # ---------------------------------------------------------
 
@@ -430,6 +443,198 @@ def main() -> None:
         platform_df,
         width="stretch",
     )
+
+    # ---------------------------------------------------------
+    # Phase 7 - AI Insights
+    # ---------------------------------------------------------
+
+    st.subheader("AI Insights")
+    st.caption(
+        "Explainable anomaly diagnostics, macro sentiment trends, and root-cause correlation."
+    )
+
+    # 1. Overall Trend
+    st.markdown("### Overall Trend")
+    trend_direction = trend_result["direction"]
+    trend_label = trend_result["label"]
+    net_change_pct = trend_result["net_change"] * 100
+    volatility = trend_result["volatility"]
+
+    trend_cols = st.columns(4)
+    trend_cols[0].metric(
+        "Trajectory",
+        trend_label,
+        delta=f"{net_change_pct:+.1f}%" if trend_direction != "insufficient_data" else None,
+        delta_color="normal" if trend_direction == "improving" else ("inverse" if trend_direction == "declining" else "off"),
+    )
+    trend_cols[1].metric(
+        "Net Sentiment Shift",
+        f"{net_change_pct:+.1f}%",
+    )
+    trend_cols[2].metric(
+        "Periodic Volatility (σ)",
+        f"{volatility:.2f}",
+    )
+    trend_cols[3].metric(
+        "Active Insights",
+        len(ai_insights),
+    )
+
+    if trend_direction == "improving":
+        st.success(f"**Trend Analysis ({trend_label}):** {trend_result['description']}")
+    elif trend_direction == "declining":
+        st.error(f"**Trend Analysis ({trend_label}):** {trend_result['description']}")
+    elif trend_direction == "volatile":
+        st.warning(f"**Trend Analysis ({trend_label}):** {trend_result['description']}")
+    else:
+        st.info(f"**Trend Analysis ({trend_label}):** {trend_result['description']}")
+
+    # 2. Priority Insights & Root-Cause Explanations
+    st.markdown("### Priority Insights")
+
+    if ai_insights:
+        ins_filter_cols = st.columns(3)
+        with ins_filter_cols[0]:
+            ins_sev_filter = st.selectbox(
+                "Filter Insights by Severity",
+                ["All", "CRITICAL", "HIGH", "MEDIUM", "LOW"],
+                key="insight_sev_filter",
+            )
+        with ins_filter_cols[1]:
+            ins_dim_filter = st.selectbox(
+                "Filter by Dimension",
+                ["All", "Brand", "Product", "Topic", "Global"],
+                key="insight_dim_filter",
+            )
+        with ins_filter_cols[2]:
+            ins_view_mode = st.selectbox(
+                "View Mode",
+                ["Interactive Cards", "Executive Briefing Text"],
+                key="insight_view_mode",
+            )
+
+        filtered_insights = []
+        for ins in ai_insights:
+            if ins_sev_filter != "All" and ins["severity"] != ins_sev_filter:
+                continue
+            dim_str = ins.get("entity_dimension", "global").title()
+            if ins_dim_filter != "All" and dim_str != ins_dim_filter:
+                continue
+            filtered_insights.append(ins)
+
+        if ins_view_mode == "Executive Briefing Text":
+            st.markdown(format_executive_report(filtered_insights, trend_result))
+        else:
+            if not filtered_insights:
+                st.info("No AI insights match the selected filters.")
+            else:
+                for ins in filtered_insights:
+                    sev = ins["severity"]
+                    if sev == "CRITICAL":
+                        card_box = st.error
+                    elif sev == "HIGH":
+                        card_box = st.warning
+                    else:
+                        card_box = st.info
+
+                    ev = ins.get("evidence", {})
+                    dim_label = ins.get("entity_dimension", "global").title()
+                    entity_name = ins.get("entity_name", "Overall Stream")
+                    topic_driver = ev.get("primary_topic")
+                    topic_share = ev.get("topic_share", 0.0)
+
+                    evidence_bullets = []
+                    if "observed_negative" in ev:
+                        evidence_bullets.append(
+                            f"• Observed Negative Posts: **{ev['observed_negative']:.0f}** "
+                            f"(Baseline: {ev.get('baseline_negative', 0.0):.1f})"
+                        )
+                    if "increase_percent" in ev:
+                        evidence_bullets.append(f"• Surge Over Baseline: **+{ev['increase_percent']:.1f}%**")
+                    if "z_score" in ev:
+                        evidence_bullets.append(f"• Anomaly Significance: **Z-score {ev['z_score']:.2f}**")
+                    if topic_driver and topic_share > 0:
+                        evidence_bullets.append(
+                            f"• Primary Co-Occurring Topic: **{topic_driver}** "
+                            f"({topic_share:.1f}% of spike negative posts)"
+                        )
+                    if ev.get("co_occurring_brand"):
+                        evidence_bullets.append(
+                            f"• Associated Brand: **{ev.get('co_occurring_brand')}** "
+                            f"({ev.get('co_occurring_brand_share', 0.0):.1f}%)"
+                        )
+                    if "share_of_all_negative" in ev:
+                        evidence_bullets.append(
+                            f"• Negative Concentration: **{ev['share_of_all_negative']:.1f}%** of all complaints"
+                        )
+                    if "net_change" in ev:
+                        evidence_bullets.append(f"• Net Sentiment Shift: **{ev['net_change'] * 100:+.1f}%**")
+
+                    card_box(
+                        f"**{sev} ALERT | {dim_label}: {entity_name}**\n\n"
+                        f"{ins['summary']}\n\n"
+                        f"**Explanation:**\n"
+                        f"{ins['explanation']}\n\n"
+                        f"**Supporting Evidence:**\n"
+                        + "\n".join(evidence_bullets)
+                    )
+
+        # 3. Supporting Diagnostics: Negative Sentiment Concentration
+        with st.expander("Supporting Metrics & Negative Sentiment Concentration"):
+            diag_cols = st.columns(3)
+            with diag_cols[0]:
+                st.markdown("**Top Affected Brands**")
+                if entity_concentration["top_brands"]:
+                    brand_df = pd.DataFrame(entity_concentration["top_brands"][:5])[
+                        ["name", "negative_count", "negative_ratio", "share_of_all_negative"]
+                    ].rename(
+                        columns={
+                            "name": "Brand",
+                            "negative_count": "Negative Posts",
+                            "negative_ratio": "Negative Ratio",
+                            "share_of_all_negative": "Share of All Neg %",
+                        }
+                    )
+                    st.dataframe(brand_df, hide_index=True, width="stretch")
+                else:
+                    st.caption("No brand concentration data.")
+
+            with diag_cols[1]:
+                st.markdown("**Top Affected Products**")
+                if entity_concentration["top_products"]:
+                    prod_df = pd.DataFrame(entity_concentration["top_products"][:5])[
+                        ["name", "negative_count", "negative_ratio", "share_of_all_negative"]
+                    ].rename(
+                        columns={
+                            "name": "Product",
+                            "negative_count": "Negative Posts",
+                            "negative_ratio": "Negative Ratio",
+                            "share_of_all_negative": "Share of All Neg %",
+                        }
+                    )
+                    st.dataframe(prod_df, hide_index=True, width="stretch")
+                else:
+                    st.caption("No product concentration data.")
+
+            with diag_cols[2]:
+                st.markdown("**Most Discussed Friction Topics**")
+                if entity_concentration["top_topics"]:
+                    topic_df = pd.DataFrame(entity_concentration["top_topics"][:5])[
+                        ["name", "negative_count", "negative_ratio", "share_of_all_negative"]
+                    ].rename(
+                        columns={
+                            "name": "Topic",
+                            "negative_count": "Negative Posts",
+                            "negative_ratio": "Negative Ratio",
+                            "share_of_all_negative": "Share of All Neg %",
+                        }
+                    )
+                    st.dataframe(topic_df, hide_index=True, width="stretch")
+                else:
+                    st.caption("No topic concentration data.")
+
+    else:
+        st.success("No anomalies or sentiment spikes detected. Overall social stream is healthy.")
 
     # ---------------------------------------------------------
     # Spike Alerts

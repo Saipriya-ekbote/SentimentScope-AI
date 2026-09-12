@@ -3,7 +3,7 @@
 > **Local-first social media sentiment monitoring, entity-aware anomaly detection, and spike alerting platform with an interactive Streamlit dashboard.**
 
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/tests-160%20passed-brightgreen.svg)](https://docs.pytest.org/)
+[![Tests](https://img.shields.io/badge/tests-187%20passed-brightgreen.svg)](https://docs.pytest.org/)
 [![Code Style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.61-FF4B4B.svg)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -12,7 +12,7 @@
 
 ## Executive Summary
 
-Organizations face significant operational and reputational risk when negative customer sentiment surges undetected across digital channels. **SentimentScope AI** is an end-to-end sentiment intelligence and monitoring platform designed to ingest multi-platform social text, clean noisy conversational data, evaluate classical machine learning models with strict leak-free methodologies, extract fine-grained entities (brands, products, operational topics), detect statistical anomalies using rolling time-series baselines, and deliver actionable alerts through an interactive, filterable Streamlit dashboard.
+Organizations face significant operational and reputational risk when negative customer sentiment surges undetected across digital channels. **SentimentScope AI** is an end-to-end sentiment intelligence and monitoring platform designed to ingest multi-platform social text, clean noisy conversational data, evaluate classical machine learning models with strict leak-free methodologies, extract fine-grained entities (brands, products, operational topics), detect statistical anomalies using rolling time-series baselines, deliver explainable AI insights with root-cause correlation, and present actionable alerts through an interactive, filterable Streamlit dashboard.
 
 ---
 
@@ -24,6 +24,7 @@ Organizations face significant operational and reputational risk when negative c
 | **Data Leakage in Model Evaluation**: Naive preprocessing and vectorization across full datasets inflate reported ML accuracy. | **Strict Leak-Free Pipeline**: Stratified 80/20 train/test splits where TF-IDF vectorizers and classifiers are fit exclusively on training data. |
 | **Superficial Sentiment Metrics**: Aggregated sentiment scores hide isolated crises impacting specific products or brands. | **Entity-Aware Extraction & Tracking**: Discovers Brand, Product, and Topic dimensions using dictionary matching and spaCy NER fallback. |
 | **False-Alarm Anomaly Detection**: Static thresholds fail to adapt to organic volume shifts across time of day or week. | **Lagged Rolling Z-Score Baselines**: Dynamic rolling statistical window ($w=3$) detects statistically significant sentiment surges with graded severity (`CRITICAL`, `HIGH`, `MEDIUM`). |
+| **Opaque Alert Notifications**: Raw z-scores and volume alerts leave stakeholders without clear explanations of root-cause drivers or trajectory. | **Explainable AI Insight Engine**: Translates anomalies into business-friendly natural explanations, classifying macro sentiment trajectory (Improving, Stable, Declining, Volatile) and isolating root-cause topics. |
 | **Unactionable Dashboards**: Monolithic dashboards lack diagnostic drill-down, alert prioritization, and export workflows. | **Interactive Operations Dashboard**: Comprehensive UI with multi-criteria filtering, priority sorting, alert severity charts, structured history tables, and CSV export. |
 
 ---
@@ -39,6 +40,12 @@ Organizations face significant operational and reputational risk when negative c
   - **Global Spikes**: Detects macro-level surges in negative sentiment across the entire stream.
   - **Entity Spikes**: Detects targeted negative sentiment surges isolating specific brands, products, or topics.
 - **Severity Graded & Prioritized Alerts**: Emits deduplicated alert records with statistical z-scores, percentage increase above baseline, and priority tiers (`1: CRITICAL`, `2: HIGH`, `3: MEDIUM`).
+- **Explainable AI Insight Engine**:
+  - **Macro Sentiment Trajectory**: Classifies timeline movement into `Improving`, `Stable`, `Declining`, or `Highly Volatile` without lookahead leakage.
+  - **Multi-Factor Explainable Severity**: Deterministic scoring across `CRITICAL`, `HIGH`, `MEDIUM`, and `LOW` tiers combining statistical z-scores, negative sentiment concentration, and volume surges.
+  - **Spike Root-Cause Correlation**: Automatically isolates co-occurring topic and entity drivers explaining *why* an anomaly occurred.
+  - **Disproportionate Friction Hotspots**: Discovers brands, products, and topics dominating negative complaint volume.
+  - **Business-Friendly Narrative Cards & Briefings**: Provides executive-ready explanations and structured summaries.
 - **Interactive Operations Dashboard**:
   - Top-level overview and alert metric cards (`Total`, `Critical`, `High`, `Entity Alerts`).
   - Severity distribution bar chart.
@@ -114,9 +121,20 @@ Organizations face significant operational and reputational risk when negative c
                                  │
                                  ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
+│                 Explainable AI Insight Layer (src/insights/)                │
+│  • Macro Sentiment Trajectory (Improving, Stable, Declining, Volatile)      │
+│  • Multi-Factor Explainable Severity Scoring (CRITICAL, HIGH, MEDIUM, LOW)  │
+│  • Spike Root-Cause Correlation (co-occurring topics & brands)              │
+│  • Negative Sentiment Concentration Hotspot Analytics                       │
+│  • Business-Friendly Formatter & Executive Briefing Generator               │
+└──────────────────────────────────────┬──────────────────────────────────────┘
+                                       │
+                                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
 │                         Streamlit Web Dashboard (app.py)                    │
 │  • Dataset Selection & Model Comparison Benchmarks                          │
 │  • Sentiment Distributions, Timeline Trend Lines, & Platform Breakdown     │
+│  • Dedicated AI Insights Section (Trajectory, Cards, Diagnostics)           │
 │  • 4x Alert Summary Metrics & Severity Distribution Chart                   │
 │  • Dynamic Filters (Severity, Scope, Dimension) & Multi-Criteria Sort       │
 │  • Formatted History Table, CSV Export, & Severity-Styled Alert Cards       │
@@ -158,6 +176,11 @@ SentimentScope AI/
 │   │   ├── detector.py                 # Hybrid dictionary + spaCy NER detector
 │   │   ├── dictionaries.py             # Domain entity lexicons & aliases
 │   │   └── normalizer.py               # Canonical entity normalization
+│   ├── insights/                       # Explainable AI insight engine
+│   │   ├── __init__.py
+│   │   ├── analyzer.py                 # Macro trend & spike driver correlation
+│   │   ├── formatter.py                # Executive text & briefing cards
+│   │   └── severity.py                 # Multi-factor explainable severity scoring
 │   ├── preprocessing/                  # Text cleaning & normalization
 │   │   ├── __init__.py
 │   │   └── cleaner.py                  # HTML, URL, mention, hashtag, elongation cleaner
@@ -172,6 +195,7 @@ SentimentScope AI/
 │   ├── alerts.py                       # Alert formatting, severity, priority, & deduplication
 │   ├── data_loader.py                  # CSV loading & schema validation
 │   ├── entity_spike_detection.py       # Entity-level negative sentiment spike detection
+│   ├── insights.py                     # Top-level explainable insights facade
 │   ├── preprocessing.py                # Top-level preprocessing entry point
 │   ├── sentiment.py                    # Top-level sentiment entry point
 │   └── spike_detection.py              # Global time-series rolling z-score spike detector
@@ -184,6 +208,7 @@ SentimentScope AI/
 │   ├── test_data_loader.py             # Tests for CSV loading & schema validation
 │   ├── test_entity_detection.py        # Tests for dictionary & spaCy entity discovery
 │   ├── test_entity_spike_detection.py  # Tests for entity-specific spike detection
+│   ├── test_insights.py                # Tests for Phase 7 AI insight engine & severity
 │   ├── test_preprocessing.py           # Tests for regex cleaning & character compression
 │   ├── test_sentiment.py               # Tests for model training, prediction, & persistence
 │   ├── test_spike_detection.py         # Tests for rolling z-score calculations
@@ -259,6 +284,35 @@ Lagged Rolling Window (w = 3) ──► Rolling Mean (μ) & Std (σ) ──► Z
 
 ---
 
+## Explainable AI Insight Engine & Severity Methodology
+
+Phase 7 introduces an explainable AI layer on top of statistical anomaly detection and entity recognition. Rather than relying on external, opaque LLMs or paid APIs, the insight engine utilizes deterministic, empirical methods to turn numerical alerts into clear, actionable business intelligence:
+
+### 1. Macro Sentiment Trajectory Classification
+Analyzes chronological net sentiment ($S_{net} = R_{positive} - R_{negative}$) across time periods without lookahead bias:
+- **`Improving`**: Net sentiment shifts upward by $\ge +0.05$ from initial baseline to recent periods.
+- **`Declining`**: Net sentiment shifts downward by $\le -0.05$ from initial baseline to recent periods.
+- **`Highly Volatile`**: High periodic volatility ($\sigma \ge 0.25$) with significant detrended residual variance ($\sigma_{res} \ge 0.20$) or frequent sign alternations across periods ($n \ge 3$).
+- **`Stable`**: Minor fluctuations within the $[-0.05, +0.05]$ boundary.
+
+### 2. Multi-Factor Explainable Severity Scoring
+Combines statistical deviation, volume weight, and negative concentration:
+- **`CRITICAL`** (Priority 1): $z \ge 4.0$ (or infinite spike), OR ($z \ge 3.0$ with $\ge 10$ negative posts and negative ratio $\ge 70\%$), OR (surge $\ge 100\%$ with $\ge 20$ negative posts and negative ratio $\ge 60\%$).
+- **`HIGH`** (Priority 2): $z \in [3.0, 4.0)$, OR ($z \ge 2.0$ with $\ge 5$ negative posts and negative ratio $\ge 60\%$), OR (surge $\ge 50\%$ with $\ge 5$ negative posts and negative ratio $\ge 50\%$).
+- **`MEDIUM`** (Priority 3): $z \in [2.0, 3.0)$, OR negative ratio $\ge 40\%$ with $\ge 5$ negative posts, OR (surge $\ge 25\%$ with negative ratio $\ge 40\%$).
+- **`LOW`** (Priority 4): Sub-threshold fluctuations, low volume, or predominantly neutral/positive activity.
+
+### 3. Root-Cause Correlation
+When an alert triggers at timestamp $t$:
+- Isolates negative posts within the corresponding time window.
+- Determines the primary co-occurring topic (e.g., `flight delay`, `customer_service`, `cancellation`) and brand.
+- Quantifies the driver's exact percentage share of negative volume during the incident, answering *why* an alert matters without guesswork.
+
+### 4. Disproportionate Concentration Hotspots
+Identifies specific brands, products, or topics that account for a disproportionately large share ($\ge 25\%$) of all negative customer feedback across the stream.
+
+---
+
 ## Interactive Streamlit Dashboard
 
 The web interface in [`app.py`](app.py) provides operational visibility:
@@ -318,7 +372,7 @@ Open your browser to `http://localhost:8501`.
 
 ## Quality Assurance & Testing
 
-The test suite covers schema validation, text cleaning edge cases, stratified ML evaluation, model persistence, multi-dimensional aggregation, entity detection, rolling z-score spikes, and alert formatting.
+The test suite covers schema validation, text cleaning edge cases, stratified ML evaluation, model persistence, multi-dimensional aggregation, entity detection, rolling z-score spikes, alert formatting, macro sentiment trajectory classification, multi-factor severity scoring, and root-cause spike correlation.
 
 Run the test suite with:
 
@@ -326,13 +380,13 @@ Run the test suite with:
 pytest -q
 ```
 
-**Test Status**: **160 passed** (with 0 failures).
+**Test Status**: **187 passed** (with 0 failures).
 
 Run code quality and formatting checks:
 
 ```bash
-ruff check app.py
-python -m py_compile app.py
+ruff check app.py src/
+python -m py_compile app.py src/insights.py
 git diff --check
 ```
 
@@ -368,7 +422,8 @@ To enhance the visual appeal of this project for technical recruiters and portfo
 - [x] **Phase 4: Entity Detection Engine** — Brand, Product, and Topic extraction using curated dictionaries and spaCy NER fallback.
 - [x] **Phase 5: Multi-Dimensional Aggregation** — Hourly and daily aggregation across platforms and entity dimensions.
 - [x] **Phase 6: Advanced Spike Detection & Alert Dashboard** — Entity-aware anomaly detection, severity/priority ranking, deduplication, alert filtering, history tables, and CSV export.
-- [ ] **Phase 7: Cloud Deployment & Webhook Alerting** — Containerization (Docker), cloud deployment, and automated Slack/Discord webhook dispatch.
+- [x] **Phase 7: Final AI Enhancement & Production Readiness** — Explainable AI insight engine, macro sentiment trajectory classification, multi-factor severity scoring, spike root-cause driver correlation, entity concentration hotspots, and executive Streamlit briefing.
+- [ ] **Phase 8: Cloud Deployment & Webhook Alerting** — Containerization (Docker), cloud deployment, and automated Slack/Discord webhook dispatch.
 
 ---
 
